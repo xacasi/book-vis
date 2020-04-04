@@ -1,0 +1,148 @@
+<%= stylesheet_link_tag  "users" %>
+
+<%= include_gon %>
+<main class = "container">
+
+
+  <div class="row"><div id = "avatar"><%= image_tag @user.avatar.variant(resize_to_limit: [200, 200]) %></div>
+  	<div id = "profile-header">
+	  <div class="row"><div id="display-name"><h2><%= @user.display_name %></h2></div>
+	  <% if @user == current_user %>
+	  <%= link_to 'Edit Profile', user_edit_profile_path(@user) %>
+	  <% end %>
+	</div>
+	  <div class="row">last updated</div>
+  </div>  
+</div>
+
+<br>
+<% if @user == current_user %>
+<%= link_to "Generate Report", shelves_update_path, class: "btn btn-success" %>
+<% end %>
+
+	  <div class="row">
+	  	<div class="col-sm-4"><b>Books</b></div>
+	  	<div class="col-sm-4"><b>Authors</b></div>
+	  </div>
+		<div class="row">
+			<div class="col-sm-4"><%= @read_count %></div>
+			<div class="col-sm-4"><%= @author_count %></div>
+	  </div>
+
+
+
+<div class = "chart">
+<h4>Recently Read</h4>
+<table class="table table-sm">
+  <tbody>
+<% @recently_read.each do |book| %>
+    <tr>
+      <td><%= book.title %></td>
+      <td><%= book.author %></td>
+    </tr>
+<% end%>
+  </tbody>
+</table>
+</div>
+
+<div class = "chart">
+<h4>Most Read Authors</h4>
+<table class="table table-sm">
+  <tbody>
+<% @most_read_authors.each do |author| %>
+    <tr>
+      <td><div class = "title-right"><%= author.author %></div></td>
+      <td><div class ="bar most-read-authors"><div class="bar-value most-author"><%= author.total_read_count %></div>
+      </div></td>
+    </tr>
+<% end%>
+  </tbody>
+</table>
+</div>
+
+<div class = "chart">
+<h4>Most Read Books</h4>
+<table class="table table-sm">
+  <tbody>
+<% @read_books.each do |book| %>
+    <tr>
+      <td><div class = "title-right"><b><%= book[:work_title] %></b>
+      	<br><div class = "longest-books-author"><%= book[:author] %></div></div></td>
+      <td><div class ="bar most-read-books"><div class="bar-value most-read"><%= book[:total_read_count] %></div>
+      </div></td>
+    </tr>
+<% end%>
+  </tbody>
+</table>
+</div>
+
+<div class = "chart">
+<h4>Books Read</h4>
+
+	 <div class="form-row align-items-center">
+	 	<div class="col-auto">
+		<label class="my-1 mr-2" for="inlineFormCustomSelectPref">Group by:</label>
+		<div class="btn-group btn-group-toggle" data-toggle="buttons">
+		  <label class="btn btn-secondary active">
+		    <input type="radio" name="options" onclick="select_button('year')" checked> Year
+		  </label>
+		  <label class="btn btn-secondary">
+		    <input type="radio" name="options" onclick="select_button('month')">Month
+		  </label>
+		</div>
+		</div>
+		<div class="col-auto"><select id="selectButton_syear" class="custom-select"></select>
+		</div>
+	</div>
+
+	<div id = "seasonal_breakdown"></div>
+</div>
+
+
+<div class = "chart">
+<h4>Books Read per Shelf</h4>
+<div id = "tastes"></div>
+</div>
+
+<div class = "chart">
+<h4>Longest Read Books</h4>
+<table class="table table-sm">
+  <tbody>
+<% @longest_books.each do |book| %>
+    <tr>
+      <td><div class = "title-right"><b><%= book[:title] %></b>
+      	<br><div class = "longest-books-author"><%= book[:author] %></div></div></td>
+      <td><div class ="bar longest-books-bar"><div class="bar-value longest"><%= book[:num_pages] %></div>
+      </div></td>
+    </tr>
+<% end%>
+  </tbody>
+</table>
+</div>
+
+<div class = "chart">
+<h4>Publishing Date of Books Read</h4>
+<div id = "publishing_breakdown"></div>
+</div>
+
+<div class = "chart">
+<h4>Formats</h4>
+<table class="table table-sm">
+  <tbody>
+<% @formats_read.each do |format| %>
+    <tr>
+      <td><div class = "title-right"><%= format.format %></div></td>
+      <td><div class ="bar format"><div class="bar-value format"><%= format.total_read_count %></div>
+      </div></td>
+    </tr>
+<% end%>
+  </tbody>
+</table>
+</div>
+
+<div class = "chart">
+<div id = "formats_read"></div>
+</div>
+
+</main>
+<%= javascript_include_tag "user_show", "data-turbolinks-track" => "reload" %>

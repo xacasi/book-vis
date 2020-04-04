@@ -1,0 +1,47 @@
+<p>Your books:</p>
+
+<br>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Goodreads ID</th>
+      <th>Work ID</th>
+      <th>Rating</th>
+      <th>Read Count</th>
+      <th>Date Published</th>
+      <th>Pages</th>
+      <th>Format</th>
+      <th>Dates Read</th>
+      <th>Shelves</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+
+    <% @books.each do |book| %>
+      <tr>
+        <td><%= book.title %></td>
+        <td><%= book.author %></td>
+        <td><%= book.goodreads_id %></td>
+        <td><%= book.work_id %></td>
+        <td><%= book.rating %></td>
+        <td><%= book.read_count %></td>
+        <td><% if book.date_pub != nil %><%= book.date_pub.strftime("%Y") %><% end %></td>
+        <td><%= book.num_pages %></td>
+        <td><%= book.format %></td>
+        <td><%  book.book_dates.each do |date| %>
+        	<%= date.date_started %> - <%= date.date_started %>
+        	<% end %>
+        </td>
+        <td><%  book.shelves.each do |shelf| %>
+        	<%= shelf.name %>
+        	<% end %>
+        </td>
+        <td><%= link_to 'Delete', book, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger btn-raised'  %></td>
+      </tr>
+    <% end %>
+
+</table>

@@ -1,0 +1,6 @@
+<p>Your shelves: </p>
+<% @user.shelves.each do |shelf| %>
+<span class="badge badge-pill badge-light"><%= shelf.name %></span>
+<% end%>
+<p>You can group these shelves!</p>
+

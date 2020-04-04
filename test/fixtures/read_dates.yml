@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  belongs_to: 
+  date_started: 2020-03-02 23:44:51
+  date_finished: 2020-03-02 23:44:51
+
+two:
+  belongs_to: 
+  date_started: 2020-03-02 23:44:51
+  date_finished: 2020-03-02 23:44:51

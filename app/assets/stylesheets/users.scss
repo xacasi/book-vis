@@ -1,0 +1,74 @@
+// Place all the styles related to the Users controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+#display-name{
+	font-family: 'Crimson Text', serif;
+	font-weight: 600;
+}
+
+.title-right{
+	text-align: right;
+}
+
+.longest-books-author{
+	font-size: 14px;
+}
+
+.bar{
+	height: 100%;
+	min-width: 25px;
+	vertical-align: middle;
+}
+
+.bar-value{
+	position: relative;
+	left: 5px;
+	color: white;
+}
+
+
+#avatar img {
+  border-radius: 50%;
+    width: 110px;
+  height: 110px;
+} 
+
+h2{
+	text-align: left;
+}
+
+#profile-header{
+	position: relative;
+	left: 40px;
+	top: 40px;
+}
+
+#avatar{
+	position: relative;
+	top: 20px;
+	padding: 10px;
+}
+
+#user-options{
+	position: relative;
+	top: 40px;
+}
+
+.chart{
+	padding-top: 20px;
+}
+
+h4{
+	font-family: 'Crimson Text', serif;
+}
+
+.axis--y path{
+	stroke: #E8E8E8;
+
+}
+
+.axis--x path{
+	stroke: #E8E8E8;
+
+}

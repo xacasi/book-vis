@@ -1,0 +1,30 @@
+<h1>Users Index</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Display Name</th>
+      <th>ID</th>
+      <th>Goodreads ID</th>
+      <th>Access Token</th>
+      <th>Access Token Secret</th>
+      <th>Signed in</th>
+      <th colspan="2">Actions</th>
+    </tr>
+  </thead>
+
+
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= user.display_name %></td>
+        <td><%= user.id %></td>
+        <td><%= user.goodreads_user_id %></td>
+        <td><%= user.access_token %></td>
+        <td><%= user.access_token_secret %></td>
+        <td><%= user.created_at %></td>
+        <td><%= link_to 'Edit', edit_user_path(user), :class => 'btn btn-default btn-raised'  %>
+          <%= link_to 'Delete', user, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger btn-raised'  %></td>
+      </tr>
+    <% end %>
+
+</table>

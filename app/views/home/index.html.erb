@@ -1,0 +1,8 @@
+<main class = "container">
+	<h1>Book Data Vis</h1>
+
+	<% if user_signed_in? %>
+	<% else %>
+	<%=link_to image_tag("goodreads-login-button.png"), params[:url] %>
+	<% end %>
+</main>
