@@ -202,6 +202,7 @@ var line_s = d3.line()
       .call(brush_s)
       .call(brush_s.move, x_seasonal.range());
 
+
     line_chart_s
         .append("path")
         .attr("class", "line")
@@ -216,13 +217,8 @@ var line_s = d3.line()
       	.attr("stroke-width", 2)
       	.attr("fill", "none");
 
-    var tooltip_s = line_chart_s.append("g")
-	        .attr("class", "tooltip_s")
-	        .style("display", "none");
-
-    tooltip_s.append("text")
-        .attr("x", 15)
-      	.attr("dy", ".31em");
+    var tooltip_s = d3.select("#tooltip_s")
+    .style("display", "none");
 
     svg_seasonal
      	.append("rect")
@@ -232,7 +228,7 @@ var line_s = d3.line()
         .attr("transform", "translate(" + margin_seasonal.left + "," + margin_seasonal.top + ")")
         .style("fill","none")
         .style("pointer-events", "all");
-        
+       
 
 	function brushed_s() {
 	  if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; 
@@ -313,10 +309,11 @@ function update_s(data, year) {
 	          d0 = data[i - 1],
 	          d1 = data[i],
 		      d = x0 - d0.date_finished > d1.date_finished - x0 ? d1 : d0;
-		      tooltip_s.attr("transform", "translate(" + x_seasonal(d.date_finished) + "," + y_seasonal(d.read_count) + ")");
-		      tooltip_s.select("text").text(function() { return "Books Read: " + d.read_count + 
-		      	"\nMonth: " + d.date_finished.toLocaleString('default', { month: 'long' }); });
+		      tooltip_s
+		      	.html("<strong>Books:</strong> "+ d.read_count + "<br><strong>Year:</strong> " + d.date_finished.toLocaleString('default', { month: 'long' }) )
+		      	.style("transform", "translate(" + (x_seasonal(d.date_finished)+ 50 )+ "px," + y_seasonal(d.read_count) + "px)");
 	        }); 
+
      }
 
      else{
@@ -329,9 +326,9 @@ function update_s(data, year) {
 	          d0 = data[i - 1],
 	          d1 = data[i],
 		      d = x0 - d0.date_finished > d1.date_finished - x0 ? d1 : d0;
-		      tooltip_s.attr("transform", "translate(" + x_seasonal(d.date_finished) + "," + y_seasonal(d.read_count) + ")");
-		      tooltip_s.select("text").text(function() { return "Books Read: " + d.read_count + 
-		      	"\nYear: " + d.date_finished.getFullYear(); });
+		      tooltip_s
+		      	.html("<strong>Books:</strong> "+ d.read_count + "<br><strong>Year:</strong> " + d.date_finished.getFullYear())
+		      	.style("transform", "translate(" + (x_seasonal(d.date_finished)+ 50 )+ "px," + y_seasonal(d.read_count) + "px)");
 	        }); 
      }
 
