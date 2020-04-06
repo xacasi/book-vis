@@ -584,14 +584,16 @@ var svg_taste = d3.select("#tastes")
     .range([ 0, width_taste ]);
   svg_taste.append("g")
     .attr("transform", "translate(0," + height_taste + ")")
-    .call(d3.axisBottom(x_taste));
+    .call(d3.axisBottom(x_taste))
+    .attr("class","axis--x");
 
   // Add Y axis
   var y_taste = d3.scaleLinear()
     .domain([0, d3.max(taste, function(d) { return d.read_count; })])
     .range([ height_taste, 0 ]);
   svg_taste.append("g")
-    .call(d3.axisLeft(y_taste));
+    .call(d3.axisLeft(y_taste).tickFormat(d3.format("d")).ticks(5))
+    .attr("class","axis--y");
 
   // color palette
   var res = taste_nested.map(function(d){ return d.key }) // list of group names
@@ -643,7 +645,7 @@ var tooltip_taste = d3.select("#tastes")
 		     .on('mouseover', function (d) {
 		       tooltip_taste.transition()
 		         .style('opacity', .9);
-		       tooltip_taste.html("<b>Year:</b> " + d.date_finished.getFullYear()  + "<br><b>Books Read:</b> " + d.read_count)
+		       tooltip_taste.html("<b>Year:</b> " + d.date_finished.getFullYear()  + "<br><b>Read:</b> " + d.read_count)
 		         .style('left', `${d3.event.pageX + 2}px`)
 		         .style('top', `${d3.event.pageY - 18}px`);
 
@@ -667,7 +669,7 @@ var tooltip_taste = d3.select("#tastes")
         .append('g')
         .append("text")
           .attr('x', width_taste + 35)
-          .attr('y', function(d,i){ return 20 + i*30})
+          .attr('y', function(d,i){ return 6 + i*30})
           .text(function(d) { return d.key; })
           .style("fill", function(d){ return color(d.key) })
           .style("font-size", 15)

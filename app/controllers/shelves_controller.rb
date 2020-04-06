@@ -81,8 +81,10 @@ class ShelvesController < ApplicationController
 						puts "Exists? " + existing.to_s
 						book = current_user.books.create(title: title, author: author, goodreads_id: goodreads_id, work_id: Integer(work_id), 
 							rating: rating, format: bookformat, read_count: read_count, num_pages: num_pages, date_pub: date_pub) 
+						
 						#join books to shelves
 						book.shelves << shelves
+						
 						#add the dates read
 						for i in 0..(date_finished.length - 1)
 							if !(date_started[i].nil? && date_finished[i].nil?)
@@ -101,6 +103,7 @@ class ShelvesController < ApplicationController
 
 		redirect_to current_user
 	end
+
 
 	private def parse_to_int(int_string)
 		begin

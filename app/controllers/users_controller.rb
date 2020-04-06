@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-	before_action :set_user, only: [:show, :edit, :update, :destroy, :booklist, :edit_profile]
+	before_action :set_user, only: [:show, :edit, :update, :destroy, :booklist, :edit_profile, :update_profile]
 
 	def index
 		@users = User.all
@@ -53,13 +53,11 @@ class UsersController < ApplicationController
 		gon.publishing_breakdown = @publishing_breakdown
 
 		@taste = []
-		@user.shelves.each do |shelf|
-			if (shelf.name.in?(["read","to-read","currently-reading"]))
-			else
+		@show_shelves = @user.shelves.where(show: true)
+		@show_shelves.each do |shelf|
 			dates = shelf.books.joins(:book_dates).group_by_year(:date_finished).count
 			date_array = []
 			dates.each {|k,v| @taste.push("shelf": shelf.name, "date_finished": k,"read_count": v) }
-			end
 		end
 		gon.taste = @taste.to_json
 
@@ -70,13 +68,14 @@ class UsersController < ApplicationController
 	end
 
 	def edit
+
 	end
 
 	def update
 		respond_to do |format|
 			@user.avatar.attach(params[:avatar])
 	      if @user.update(user_params)
-	        format.html { redirect_to users_url, notice: 'Account info updated.' }
+	        format.html { redirect_to users_url notice: 'Account info updated.' }
 	        format.json { render :index, status: :ok}
 	      else
 	        format.html { render :edit }
@@ -86,6 +85,18 @@ class UsersController < ApplicationController
 	end
 
 	def edit_profile
+	end
+
+	def update_profile
+		respond_to do |format|
+		if @user.update(params[:user].permit(:id, shelves_attributes: [:id, :show]))
+	        format.html { redirect_to user_path(@user), notice: 'Profile updated.' }
+	        format.json { render :show, status: :ok}
+	      else
+	        format.html { render :edit_profile }
+	        format.json { render json: @user.errors, status: :unprocessable_entity }
+	      end
+		end
 	end
 
 	def destroy

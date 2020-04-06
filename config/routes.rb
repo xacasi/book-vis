@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get 'shelves/update'
   get 'users/booklist/:id', to: 'users#booklist', as: 'user_books'
   get 'users/edit_profile/:id', to:'users#edit_profile', as: 'user_edit_profile'
+  patch 'users/update_profile/:id', to: 'users#update_profile', as: 'user_update_profile'
 
   get 'home/redirect'
   root 'home#index'
