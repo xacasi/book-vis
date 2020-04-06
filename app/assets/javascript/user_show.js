@@ -202,13 +202,13 @@ var line_s = d3.line()
       .call(brush_s)
       .call(brush_s.move, x_seasonal.range());
 
-
     line_chart_s
         .append("path")
         .attr("class", "line")
         .attr("stroke", "gray")
       	.attr("stroke-width", 2)
       	.attr("fill", "none");
+
 
      context_s
     	.append("path")
@@ -240,10 +240,12 @@ var line_s = d3.line()
 	      .scale(width_seasonal / (s[1] - s[0]))
 	      .translate(-s[0], 0));
 
+	  line_chart_s.select("#tooltip-dot").remove();
+
 	  line_chart_s
         .selectAll("circle")
         .attr("cx", function(d) { return x_seasonal(d.date_finished); })
-   		.attr("cy", function(d) { return y_seasonal(d.read_count); })
+   		.attr("cy", function(d) { return y_seasonal(d.read_count); });
 
 	}
 
@@ -255,10 +257,13 @@ var line_s = d3.line()
 	  focus_s.select(".axis--x").call(xAxis_seasonal);
 	  context_s.select(".brush").call(brush_s.move, x_seasonal.range().map(t.invertX, t));
 
+	  line_chart_s.select("#tooltip-dot").remove();
+
 	  line_chart_s
         .selectAll("circle")
         .attr("cx", function(d) { return x_seasonal(d.date_finished); })
-   		.attr("cy", function(d) { return y_seasonal(d.read_count); })
+   		.attr("cy", function(d) { return y_seasonal(d.read_count); });
+
 	}
 
 	// Create a function that takes a dataset as input and update the plot:
@@ -296,8 +301,9 @@ function update_s(data, year) {
       	.attr("class","dot")
         .attr("cx", function(d) { return x_seasonal(d.date_finished) } )
         .attr("cy", function(d) { return y_seasonal(d.read_count) } )
-        .attr("r", 4)
-        .attr("fill", "gray");
+        .attr("r", 5)
+        .attr("fill", "gray")
+        .attr("stroke", "white");
 
      if (year == true){
      	svg_seasonal.select(".overlay-tooltip")
@@ -312,6 +318,16 @@ function update_s(data, year) {
 		      tooltip_s
 		      	.html("<strong>Books:</strong> "+ d.read_count + "<br><strong>Year:</strong> " + d.date_finished.toLocaleString('default', { month: 'long' }) )
 		      	.style("transform", "translate(" + (x_seasonal(d.date_finished)+ 50 )+ "px," + y_seasonal(d.read_count) + "px)");
+		      
+		      line_chart_s.select("#tooltip-dot").remove();
+
+		      line_chart_s.append("circle")
+		            	.attr("id","tooltip-dot")
+				        .attr("cx", x_seasonal(d.date_finished) )
+				        .attr("cy", y_seasonal(d.read_count))
+				        .attr("r", 7)
+				        .attr("fill", "red")
+				        .attr("stroke", "white");
 	        }); 
 
      }
@@ -319,7 +335,9 @@ function update_s(data, year) {
      else{
      	 svg_seasonal.select(".overlay-tooltip")
 	    .on("mouseover", function() { tooltip_s.style("display", null); })
-	    .on("mouseout", function() { tooltip_s.style("display", "none"); })
+	    .on("mouseout", function() { 
+	    	tooltip_s.style("display", "none");
+	    	})
 	    .on("mousemove", function(){
 	        var x0 = x_seasonal.invert(d3.mouse(this)[0]),
 	          i = bisectDate(data, x0, 1),
@@ -329,10 +347,18 @@ function update_s(data, year) {
 		      tooltip_s
 		      	.html("<strong>Books:</strong> "+ d.read_count + "<br><strong>Year:</strong> " + d.date_finished.getFullYear())
 		      	.style("transform", "translate(" + (x_seasonal(d.date_finished)+ 50 )+ "px," + y_seasonal(d.read_count) + "px)");
+
+		      line_chart_s.select("#tooltip-dot").remove();
+
+		      line_chart_s.append("circle")
+		            	.attr("id","tooltip-dot")
+				        .attr("cx", x_seasonal(d.date_finished) )
+				        .attr("cy", y_seasonal(d.read_count))
+				        .attr("r", 7)
+				        .attr("fill", "red")
+				        .attr("stroke", "white");
 	        }); 
      }
-
-
 
     context_s
     	.select(".line")
@@ -371,7 +397,9 @@ function update_s(data, year) {
 // At the beginning, I run the update function on the first dataset:
 update_s(seasonal_breakdown_year);
 
-//Publishing Breakdown
+//Publishing Date
+
+	var tooltip_pub = d3.select("#tooltip_pub").style("display", "none");
 
     var tooltip = d3.select("#publishing_breakdown")
       .append("div")
