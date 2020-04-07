@@ -2,6 +2,8 @@
 document.getElementById("selectButton_syear").disabled = true;
 
 var publishing_breakdown = JSON.parse(gon.publishing_breakdown);
+var publishing_breakdown_ce = JSON.parse(gon.publishing_breakdown_ce);
+
 var seasonal_breakdown = JSON.parse(gon.seasonal, function(key, value){
 	if (key == "date_finished")
 		return new Date(value);
@@ -209,7 +211,6 @@ var line_s = d3.line()
       	.attr("stroke-width", 2)
       	.attr("fill", "none");
 
-
      context_s
     	.append("path")
         .attr("class", "line")
@@ -317,7 +318,7 @@ function update_s(data, year) {
 		      d = x0 - d0.date_finished > d1.date_finished - x0 ? d1 : d0;
 		      tooltip_s
 		      	.html("<strong>Books:</strong> "+ d.read_count + "<br><strong>Year:</strong> " + d.date_finished.toLocaleString('default', { month: 'long' }) )
-		      	.style("transform", "translate(" + (x_seasonal(d.date_finished)+ 50 )+ "px," + y_seasonal(d.read_count) + "px)");
+		      	.style("transform", "translate(" + (x_seasonal(d.date_finished)+ 50 )+ "px," + (y_seasonal(d.read_count)-40) + "px)");
 		      
 		      line_chart_s.select("#tooltip-dot").remove();
 
@@ -346,7 +347,7 @@ function update_s(data, year) {
 		      d = x0 - d0.date_finished > d1.date_finished - x0 ? d1 : d0;
 		      tooltip_s
 		      	.html("<strong>Books:</strong> "+ d.read_count + "<br><strong>Year:</strong> " + d.date_finished.getFullYear())
-		      	.style("transform", "translate(" + (x_seasonal(d.date_finished)+ 50 )+ "px," + y_seasonal(d.read_count) + "px)");
+		      	.style("transform", "translate(" + (x_seasonal(d.date_finished)+ 50 )+ "px," + (y_seasonal(d.read_count)-40) + "px)");
 
 		      line_chart_s.select("#tooltip-dot").remove();
 
@@ -401,16 +402,7 @@ update_s(seasonal_breakdown_year);
 
 	var tooltip_pub = d3.select("#tooltip_pub").style("display", "none");
 
-    var tooltip = d3.select("#publishing_breakdown")
-      .append("div")
-      .style("opacity", 0)
-      .attr("class", "tooltip")
-      .style("background-color", "white")
-      .style("border", "solid")
-      .style("border-width", "2px")
-      .style("border-radius", "5px")
-      .style("padding", "5px");
-
+	var bisect = d3.bisector(function(d) { return d.year_pub; }).left;
 
 	// set the dimensions and margins of the graph
 	var margin_publishing = {top: 20, right: 20, bottom: 140, left: 40},
@@ -420,19 +412,13 @@ update_s(seasonal_breakdown_year);
 	    height_publishing2 = 600- margin_publishing2.top - margin_publishing2.bottom;
 
 	// append the svg object to the body of the page
-
 	  var x_publishing = d3.scaleLinear()
-	  		.domain([ d3.min(publishing_breakdown, function(d) { return d.year_pub; })-2, 
-	  			d3.max(publishing_breakdown, function(d) { return d.year_pub; }) + 2 ])
 	  		.range([0, width_publishing]);
 	    x_publishing2 = d3.scaleLinear()
-	    	.domain(x_publishing.domain())
 	    	.range([0, width_publishing]);
 	    y_publishing = d3.scaleLinear()
-	    	.domain([0, d3.max(publishing_breakdown, function(d) { return d.total_read_count; }) + 2 ])
 	    	.range([height_publishing, 0]);
 	    y_publishing2 = d3.scaleLinear()
-	    	.domain(y_publishing.domain())
 	    	.range([height_publishing2, 0]);
 
 	var xAxis_publishing = d3.axisBottom(x_publishing).tickFormat(d3.format("d")), //make sure values don't repeat
@@ -487,66 +473,15 @@ update_s(seasonal_breakdown_year);
 
 	    focus.append("g")
 		        .attr("class", "axis axis--x")
-		        .attr("transform", "translate(0," + height_publishing + ")")
-		        .call(xAxis_publishing);
+		        .attr("transform", "translate(0," + height_publishing + ")");
 
 		focus.append("g")
-		        .attr("class", "axis axis--y")
-		        .call(yAxis_publishing);
+		        .attr("class", "axis axis--y");
 
-
-	    line_chart.append("path")
-	        .datum(publishing_breakdown)
-	        .attr("class", "line")
-	        .attr("stroke", "steelblue")
-	      	.attr("stroke-width", 2)
-	      	.attr("fill", "none")
-	        .attr("d", line);
-
-	    line_chart
-	      .append("g")
-	      .selectAll("dot")
-	      .data(publishing_breakdown)
-	      .enter()
-	      .append("circle")
-	        .attr("cx", function(d) { return x_publishing(d.year_pub) } )
-	        .attr("cy", function(d) { return y_publishing(d.total_read_count) } )
-	        .attr("r", 4)
-	        .attr("fill", "gray")
-		     .on('mouseover', function (d) {
-		       tooltip.transition(20)
-		         .style('opacity', .9);
-		       tooltip.html("year: " + d.year_pub  + "<br>books read: " + d.total_read_count)
-		         .style('left', `${d3.event.pageX + 2}px`)
-		         .style('top', `${d3.event.pageY - 18}px`);
-
-		        d3.select(this).transition(20)
-			          .attr("r", 6)
-			          .attr("fill", "red");
-
-		     })
-		     .on('mouseout', function (d) {
-		       tooltip.transition()
-		         .style('opacity', 0);
-
-		      d3.select(this).transition()
-			          .attr("r", 4)
-			          .attr("fill", "gray");
-		     });
-
-
-	    context.append("path")
-	        .datum(publishing_breakdown)
-	        .attr("class", "line")
-	        .attr("stroke", "steelblue")
-	      	.attr("stroke-width", 2)
-	      	.attr("fill", "none")
-	        .attr("d", line2);
 
 	   	context.append("g")
 	      .attr("class", "axis axis--x")
-	      .attr("transform", "translate(0," + height_publishing2 + ")")
-	      .call(xAxis2_publishing);
+	      .attr("transform", "translate(0," + height_publishing2 + ")");
 
 	  	context.append("g")
 	      .attr("class", "brush")
@@ -554,6 +489,26 @@ update_s(seasonal_breakdown_year);
 	      .call(brush.move, x_publishing.range());
 
 
+	    line_chart.append("path")
+	        .attr("class", "line")
+	        .attr("stroke", "gray")
+	      	.attr("stroke-width", 2)
+	      	.attr("fill", "none");
+
+	    context.append("path")
+	        .attr("class", "line")
+	        .attr("stroke", "gray")
+	      	.attr("stroke-width", 2)
+	      	.attr("fill", "none");
+
+	   svg_publishing
+	     	.append("rect")
+	        .attr("class", "overlay-tooltip-pub")
+	        .attr("width", width_publishing)
+	        .attr("height", height_publishing)
+	        .attr("transform", "translate(" + margin_publishing.left + "," + margin_publishing.top + ")")
+	        .style("fill","none")
+	        .style("pointer-events", "all");
 
 
 		function brushed() {
@@ -565,6 +520,8 @@ update_s(seasonal_breakdown_year);
 		  svg_publishing.select(".zoom").call(zoom.transform, d3.zoomIdentity
 		      .scale(width_publishing / (s[1] - s[0]))
 		      .translate(-s[0], 0));
+
+		  line_chart.select("#tooltip-dot").remove();
 
 		  line_chart
 	        .selectAll("circle")
@@ -581,110 +538,194 @@ update_s(seasonal_breakdown_year);
 		  focus.select(".axis--x").call(xAxis_publishing);
 		  context.select(".brush").call(brush.move, x_publishing.range().map(t.invertX, t));
 
+		  line_chart.select("#tooltip-dot").remove();
+
 		  line_chart
 	        .selectAll("circle")
 	        .attr("cx", function(d) { return x_publishing(d.year_pub); })
-	   		.attr("cy", function(d) { return y_publishing(d.total_read_count); })
+	   		.attr("cy", function(d) { return y_publishing(d.total_read_count); });
 		}
+
+	function update_pub(data) {
+
+	    x_publishing.domain([ d3.min(data, function(d) { return d.year_pub; }), 
+	  			d3.max(data, function(d) { return d.year_pub; })]);
+	    x_publishing2.domain(x_publishing.domain());
+	    y_publishing.domain([0, d3.max(data, function(d) { return d.total_read_count; }) ]);
+	    y_publishing2.domain(y_publishing.domain());
+
+		focus.selectAll(".axis--x").transition()
+		    .duration(2000)
+		    .call(xAxis_publishing);
+
+		focus.selectAll(".axis--y")
+		    .transition()
+		    .duration(2000)
+		    .call(yAxis_publishing);
+
+		context.select(".axis--x").call(xAxis2_publishing);
+
+		line_chart
+	        .select(".line")
+	        .datum(data)
+	        .attr("d", line);
+
+	    line_chart.selectAll("circle").remove();
+
+	    line_chart
+	    .append("g")
+	    .selectAll("circle")
+	    .data(data)
+	      .enter()
+	      .append("circle")
+	      	.attr("class","dot")
+	        .attr("cx", function(d) { return x_publishing(d.year_pub) } )
+	        .attr("cy", function(d) { return y_publishing(d.total_read_count) } )
+	        .attr("r", 3)
+	        .attr("fill", "gray");
+
+	    context
+	    	.select(".line")
+	    	.datum(data)
+	        .attr("d", line2);
+
+	     svg_publishing.select(".overlay-tooltip-pub")
+		    .on("mouseover", function() { tooltip_pub.style("display", null); })
+		    .on("mouseout", function() { tooltip_pub.style("display", "none"); })
+		    .on("mousemove", function(){
+		        var x0 = x_publishing.invert(d3.mouse(this)[0]),
+		          i = bisect(data, x0, 1),
+		          d0 = data[i - 1],
+		          d1 = data[i],
+			      d = x0 - d0.year_pub > d1.year_pub - x0 ? d1 : d0;
+			      tooltip_pub
+			      	.html("<strong>" + d.year_pub + "</strong>" + "<br><strong>Books:</strong> "+ d.total_read_count )
+			      	.style("transform", "translate(" + (x_publishing(d.year_pub)+ 50 )+ "px," + (y_publishing(d.total_read_count)-40 ) + "px)");
+
+			      line_chart.select("#tooltip-dot").remove();
+
+		    	  line_chart.append("circle")
+		            	.attr("id","tooltip-dot")
+				        .attr("cx", x_publishing(d.year_pub) )
+				        .attr("cy", y_publishing(d.total_read_count))
+				        .attr("r", 5)
+				        .attr("fill", "red")
+				        .attr("stroke", "white");
+
+			      
+		        }); 
+
+      }
+
+	function button_pub_year(){
+		update_pub(publishing_breakdown);
+	}
+
+	function button_pub_century(){
+		update_pub(publishing_breakdown_ce);
+	}
+
+update_pub(publishing_breakdown);
 
 //Shelves
 
-var margin_taste = {top: 10, right: 30, bottom: 30, left: 60},
-    width_taste = 700 - margin_taste.left - margin_taste.right,
-    margin_taste2 = {top: 10, right: width_taste + 10, bottom: 30, left: 60},
-    width_taste2 = 300 - margin_taste.left - margin_taste.right,
-    height_taste = 400 - margin_taste.top - margin_taste.bottom;
 
-// append the svg object to the body of the page
-var svg_taste = d3.select("#tastes")
-  .append("svg")
-    .attr("width", width_taste + margin_taste.left + margin_taste.right + width_taste2)
-    .attr("height", height_taste + margin_taste.top + margin_taste.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + margin_taste.left + "," + margin_taste.top + ")");
+	var margin_taste = {top: 10, right: 30, bottom: 30, left: 60},
+	    width_taste = 700 - margin_taste.left - margin_taste.right,
+	    margin_taste2 = {top: 10, right: width_taste + 10, bottom: 30, left: 60},
+	    width_taste2 = 300 - margin_taste.left - margin_taste.right,
+	    height_taste = 400 - margin_taste.top - margin_taste.bottom;
 
-  var x_taste = d3.scaleTime()
-    .domain(d3.extent(taste, function(d) { return d.date_finished; }))
-    .range([ 0, width_taste ]);
-  svg_taste.append("g")
-    .attr("transform", "translate(0," + height_taste + ")")
-    .call(d3.axisBottom(x_taste))
-    .attr("class","axis--x");
+	// append the svg object to the body of the page
+	var svg_taste = d3.select("#tastes")
+	  .append("svg")
+	    .attr("width", width_taste + margin_taste.left + margin_taste.right + width_taste2)
+	    .attr("height", height_taste + margin_taste.top + margin_taste.bottom)
+	  .append("g")
+	    .attr("transform",
+	          "translate(" + margin_taste.left + "," + margin_taste.top + ")");
 
-  // Add Y axis
-  var y_taste = d3.scaleLinear()
-    .domain([0, d3.max(taste, function(d) { return d.read_count; })])
-    .range([ height_taste, 0 ]);
-  svg_taste.append("g")
-    .call(d3.axisLeft(y_taste).tickFormat(d3.format("d")).ticks(5))
-    .attr("class","axis--y");
+	  var x_taste = d3.scaleTime()
+	    .domain(d3.extent(taste, function(d) { return d.date_finished; }))
+	    .range([ 0, width_taste ]);
+	  svg_taste.append("g")
+	    .attr("transform", "translate(0," + height_taste + ")")
+	    .call(d3.axisBottom(x_taste))
+	    .attr("class","axis--x");
 
-  // color palette
-  var res = taste_nested.map(function(d){ return d.key }) // list of group names
-  var color = d3.scaleOrdinal()
-    .domain(res)
-    .range(d3.schemeSet2);
+	  // Add Y axis
+	  var y_taste = d3.scaleLinear()
+	    .domain([0, d3.max(taste, function(d) { return d.read_count; })])
+	    .range([ height_taste, 0 ]);
+	  svg_taste.append("g")
+	    .call(d3.axisLeft(y_taste).tickFormat(d3.format("d")).ticks(5))
+	    .attr("class","axis--y");
 
- var line_taste = d3.line()
-            .x(function(d) { return x_taste(d.date_finished); })
-            .y(function(d) { return y_taste(d.read_count); });
+	  // color palette
+	  var res = taste_nested.map(function(d){ return d.key }) // list of group names
+	  var color = d3.scaleOrdinal()
+	    .domain(res)
+	    .range(d3.schemeSet2);
 
-  // Draw the line
-  svg_taste.selectAll(".line")
-      .data(taste_nested)
-      .enter()
-      .append("path")
-        .attr("fill", "none")
-        .attr("stroke", function(d){ return color(d.key) } ) //function(d){ return color(d.key) }
-        .attr("stroke-width", 2)
-        .attr("d", function(d){ return line_taste(d.values); })
-        .attr("class", function(d){ return d.key });
+	 var line_taste = d3.line()
+	            .x(function(d) { return x_taste(d.date_finished); })
+	            .y(function(d) { return y_taste(d.read_count); });
 
-var tooltip_taste = d3.select("#tastes")
-      .append("div")
-      .style("opacity", 0)
-      .attr("class", "tooltip")
-      .style("background-color", "black")
-      .style("color", "white")
-      .style("border", "solid")
-      .style("border-width", "2px")
-      .style("border-radius", "5px")
-      .style("padding", "5px");
+	  // Draw the line
+	  svg_taste.selectAll(".line")
+	      .data(taste_nested)
+	      .enter()
+	      .append("path")
+	        .attr("fill", "none")
+	        .attr("stroke", function(d){ return color(d.key) } ) //function(d){ return color(d.key) }
+	        .attr("stroke-width", 2)
+	        .attr("d", function(d){ return line_taste(d.values); })
+	        .attr("class", function(d){ return d.key });
 
-  	svg_taste
-  	.selectAll("dot-group")
-      .data(taste_nested)
-      .enter()
-        .append('g')
-        .style("fill", function(d){ return color(d.key) })
-        .attr("class", function(d){ return d.key })
-  	.selectAll("dot")
-	    .data(function(d){ return d.values })
-	    .enter()
-	    .append("circle")
-	        .attr("cx", function(d) { return x_taste(d.date_finished) } )
-	        .attr("cy", function(d) { return y_taste(d.read_count) } )
-	        .attr("r", 5)
-	        .attr("stroke", "white")
-		     .on('mouseover', function (d) {
-		       tooltip_taste.transition()
-		         .style('opacity', .9);
-		       tooltip_taste.html("<b>Year:</b> " + d.date_finished.getFullYear()  + "<br><b>Read:</b> " + d.read_count)
-		         .style('left', `${d3.event.pageX + 2}px`)
-		         .style('top', `${d3.event.pageY - 18}px`);
+	var tooltip_taste = d3.select("#tastes")
+	      .append("div")
+	      .style("opacity", 0)
+	      .attr("class", "tooltip")
+	      .style("background-color", "black")
+	      .style("color", "white")
+	      .style("border", "solid")
+	      .style("border-width", "2px")
+	      .style("border-radius", "5px")
+	      .style("padding", "5px");
 
-		        d3.select(this).transition()
-			          .attr("r", 10);
+	  	svg_taste
+	  	.selectAll("dot-group")
+	      .data(taste_nested)
+	      .enter()
+	        .append('g')
+	        .style("fill", function(d){ return color(d.key) })
+	        .attr("class", function(d){ return d.key })
+	  	.selectAll("dot")
+		    .data(function(d){ return d.values })
+		    .enter()
+		    .append("circle")
+		        .attr("cx", function(d) { return x_taste(d.date_finished) } )
+		        .attr("cy", function(d) { return y_taste(d.read_count) } )
+		        .attr("r", 5)
+		        .attr("stroke", "white")
+			     .on('mouseover', function (d) {
+			       tooltip_taste.transition()
+			         .style('opacity', .9);
+			       tooltip_taste.html("<b>Year:</b> " + d.date_finished.getFullYear()  + "<br><b>Read:</b> " + d.read_count)
+			         .style('left', `${d3.event.pageX + 2}px`)
+			         .style('top', `${d3.event.pageY - 18}px`);
 
-		     })
-		     .on('mouseout', function (d) {
-		       tooltip_taste.transition()
-		         .style('opacity', 0);
+			        d3.select(this).transition()
+				          .attr("r", 10);
 
-		      d3.select(this).transition()
-			          .attr("r", 5);
-		     });
+			     })
+			     .on('mouseout', function (d) {
+			       tooltip_taste.transition()
+			         .style('opacity', 0);
+
+			      d3.select(this).transition()
+				          .attr("r", 5);
+			     });
 
     // Add a legend (interactive)
     svg_taste

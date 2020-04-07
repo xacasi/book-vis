@@ -10,7 +10,6 @@ class UsersController < ApplicationController
 		@read_count = read_books.count
 		@author_count = read_books.select(:author).distinct.count
 
-
 		@read_books_date = read_books.joins(:book_dates).where("date_finished IS NOT NULL").order('date_finished DESC')
 		@recently_read = @read_books_date.limit(10)
 		seasonal_breakdown = read_books.joins(:book_dates).group_by_month(:date_finished).count
@@ -49,8 +48,13 @@ class UsersController < ApplicationController
 		@publishing_breakdown = read_books.where.not(date_pub: nil)
 			.select("date_part('year', date_pub) as year_pub, sum(read_count) as total_read_count")
 			.group("year_pub")
-			.order("year_pub").to_json
-		gon.publishing_breakdown = @publishing_breakdown
+			.order("year_pub")
+		gon.publishing_breakdown = @publishing_breakdown.to_json
+		@publishing_breakdown_ce = read_books.where.not(date_pub: nil)
+			.select("(CAST(date_part('year', date_pub) AS INT)/100)+1 as year_pub, sum(read_count) as total_read_count")
+			.group("year_pub")
+			.order("year_pub")
+		gon.publishing_breakdown_ce = @publishing_breakdown_ce.to_json
 
 		@taste = []
 		@show_shelves = @user.shelves.where(show: true)

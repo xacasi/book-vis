@@ -14,7 +14,6 @@
 	  <div class="row">last updated</div>
   </div>  
 </div>
-
 <br>
 <% if @user == current_user %>
 <%= link_to "Generate Report", shelves_update_path, class: "btn btn-success" %>
@@ -28,8 +27,6 @@
 			<div class="col-sm-4"><%= @read_count %></div>
 			<div class="col-sm-4"><%= @author_count %></div>
 	  </div>
-
-
 
 <div class = "chart">
 <h4>Recently Read</h4>
@@ -123,6 +120,15 @@
 
 <div class = "chart">
 <h4>Publishing Date of Books Read</h4>
+	<label class="my-1 mr-2" for="inlineFormCustomSelectPref">Group by:</label>
+		<div class="btn-group btn-group-toggle" data-toggle="buttons">
+		  <label class="btn btn-secondary active">
+		    <input type="radio" name="options" onclick="button_pub_year()" checked> Year
+		  </label>
+		  <label class="btn btn-secondary">
+		    <input type="radio" name="options" onclick="button_pub_century()">Century
+		  </label>
+		</div>
 <div id="tooltip_pub"  class="tooltip-chart"></div>
 <div id = "publishing_breakdown"></div>
 </div>
