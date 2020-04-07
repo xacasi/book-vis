@@ -47,7 +47,8 @@ h2{
 #avatar{
 	position: relative;
 	top: 20px;
-	padding: 10px;
+	margin: 10px;
+	float: left;
 }
 
 #user-options{
@@ -79,4 +80,42 @@ h4{
 	padding: 5px;
 	color: white;
 	border-radius: 5px;
+}
+
+.stats{
+	float: right;
+	display: inline;
+	list-style: none;
+}
+
+#profile-info{
+	float: left;
+	display: inline;
+}
+
+#profile-header{
+}
+
+#header{
+	padding: 3px;
+}
+
+p.generate{
+	 clear: both;
+	 margin-top: 150px;
+}
+
+
+.stats li{
+	float: left;
+	border-left: 1px solid #24303c;
+	line-height: 1;
+	padding: .38461538rem .76923077rem;
+}
+
+.stats li b{
+	font-size: 2rem;
+	letter-spacing: .03846154em;
+	display: block;
+	margin-bottom: .38461538rem;
 }

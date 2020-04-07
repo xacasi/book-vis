@@ -4,29 +4,29 @@
 <main class = "container">
 
 
-  <div class="row"><div id = "avatar"><%= image_tag @user.avatar.variant(resize_to_limit: [200, 200]) %></div>
+<div id = "header">
+ <div id = "avatar"><%= image_tag @user.avatar.variant(resize_to_limit: [200, 200]) %></div>
   	<div id = "profile-header">
-	  <div class="row"><div id="display-name"><h2><%= @user.display_name %></h2></div>
-	  <% if @user == current_user %>
-	  <%= link_to 'Edit Profile', user_edit_profile_path(@user) %>
+  	<div id = "profile-info">
+	  <div id="display-name"><h2><%= @user.display_name %></h2></div>
+		<% if @user == current_user %>
+	  <%= link_to 'Edit Profile', user_edit_profile_path(@user), class: "btn btn-outline-success btn-sm" %>
 	  <% end %>
-	</div>
-	  <div class="row">last updated</div>
+	  </div>
+
+	  <ul class = "stats">
+	  	<li><b><%= @read_count %></b>Books</li>
+	  	<li><b> <%= @author_count %></b>Authors</li>
+	  </div>
   </div>  
 </div>
-<br>
-<% if @user == current_user %>
-<%= link_to "Generate Report", shelves_update_path, class: "btn btn-success" %>
-<% end %>
 
-	  <div class="row">
-	  	<div class="col-sm-4"><b>Books</b></div>
-	  	<div class="col-sm-4"><b>Authors</b></div>
-	  </div>
-		<div class="row">
-			<div class="col-sm-4"><%= @read_count %></div>
-			<div class="col-sm-4"><%= @author_count %></div>
-	  </div>
+
+<p class = "generate">
+	<% if @user == current_user %>
+	<%= link_to "Generate Report", shelves_update_path, class: "btn btn-success btn-lg" %>
+	<% end %>
+</p>
 
 <div class = "chart">
 <h4>Recently Read</h4>

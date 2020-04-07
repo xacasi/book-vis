@@ -317,7 +317,7 @@ function update_s(data, year) {
 	          d1 = data[i],
 		      d = x0 - d0.date_finished > d1.date_finished - x0 ? d1 : d0;
 		      tooltip_s
-		      	.html("<strong>Books:</strong> "+ d.read_count + "<br><strong>Year:</strong> " + d.date_finished.toLocaleString('default', { month: 'long' }) )
+		      	.html("<strong>"+ d.date_finished.toLocaleString('default', { month: 'long' })+ "</strong> " + "<br><strong>Books:</strong> "+ d.read_count )
 		      	.style("transform", "translate(" + (x_seasonal(d.date_finished)+ 50 )+ "px," + (y_seasonal(d.read_count)-40) + "px)");
 		      
 		      line_chart_s.select("#tooltip-dot").remove();
@@ -346,7 +346,7 @@ function update_s(data, year) {
 	          d1 = data[i],
 		      d = x0 - d0.date_finished > d1.date_finished - x0 ? d1 : d0;
 		      tooltip_s
-		      	.html("<strong>Books:</strong> "+ d.read_count + "<br><strong>Year:</strong> " + d.date_finished.getFullYear())
+		      	.html("<strong>" + d.date_finished.getFullYear() + "</strong>" + "<br><strong>Books:</strong> "+ d.read_count)
 		      	.style("transform", "translate(" + (x_seasonal(d.date_finished)+ 50 )+ "px," + (y_seasonal(d.read_count)-40) + "px)");
 
 		      line_chart_s.select("#tooltip-dot").remove();

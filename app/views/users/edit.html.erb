@@ -1,21 +1,41 @@
+<main class = "container">
 <h2>Edit Profile</h2>
 
 <%= form_for(@user) do |f| %>
 <div class="form-inputs">
-	<%= f.label "Profile Picture" %><%= f.file_field :avatar, as: :file %>
-    Username: <%= f.text_field :username, required: true, autofocus: true %>
-  
-    First Name: <%= f.text_field :first_name, required: true %>
-    Last Name: <%= f.text_field :last_name, required: true%>
-  </div>
+	<div class = "form-row">
+		<div class = "form-group">
+	<%= f.label "Profile Picture" %>
+	<%= f.file_field :avatar, as: :file %>
+	</div>
+	</div>
 
+	<div class = "form-row"> 
+		<div class = "form-group">
+    <label for="display_name">Display Name</label><%= f.text_field :display_name, required: true, autofocus: true, id:"display_name", class: "form-control" %>
+    </div>
+    </div> 
+
+    <div class = "form-row"> 
+    	<div class = "col-auto">
+    	First Name <%= f.text_field :first_name, required: true, id: "first_name", class: "form-control" %>
+    	</div>
+    	<div class = "col-auto">
+	    Last Name: <%= f.text_field :last_name, required: true, class: "form-control" %>
+	    </div>
+    </div> 
+  </div>
+  <br>
+<div class="form-row">
   <div class="form-actions">
     <%= f.submit %>
+    <% end %>
   </div>
-<% end %>
 
-<h3>Cancel my account</h3>
+</div>
+<br>
 
 <p>Unhappy? <%= link_to "Cancel account", registration_path(@user), data: { confirm: "Are you sure?" }, method: :delete %></p>
 
 <%= link_to "Back", :back %>
+</main>
