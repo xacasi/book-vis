@@ -1,12 +1,18 @@
-<main class = "container">
-<% if user_signed_in? %>
-<% else %>
-<div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h1 class="display-4">See your book stats</h1>
-    <p class="lead">Data visualization for all the books you've read</p>
-    <%= image_tag("goodreads_icon_m.png") %><%=button_to "Login with goodreads", params[:url], class: "btn btn-light" %>
+ 
+<%= stylesheet_link_tag  "home" %>
+
+<div class = "outer-cover">
+<div class="text-center">
+  <div class="inner cover">
+    <h1 class="cover-heading">See your book stats</h1>
+    <p class="lead">View data visualizations for all the books you've read.</p>
+    <p class="lead">
+    <% if !user_signed_in? %>
+      <%=link_to "Login with goodreads", params[:url], class: "btn btn-lg btn-secondary" %>
+      <% end %>
+    </p>
   </div>
 </div>
-	<% end %>
-</main>
+
+</div>
+
