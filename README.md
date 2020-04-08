@@ -29,6 +29,7 @@ ENV["GOODREADS_SECRET"] = "Your Goodreads Secret"
 ```
 
 * Deployment instructions
+
 Install the gems.
 
 ```sh
@@ -36,6 +37,7 @@ $ cd bookvis
 $ bundle install
 ```
 * Database setup
+
 Bookvis uses PostgreSQL v10.12. 
 Switch to postgres user and create a role, then update  config/database.yml with your database username and password. 
 ```sh
