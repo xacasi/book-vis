@@ -2,6 +2,10 @@
 
 Bookvis is a Ruby on Rails application that generates a data visualization of all your logged books in goodreads. 
 
+### Important
+
+As of December 8th 2020, Goodreads will no longer issue new developer keys for the public developer API and plan to retire these tools. 
+
 ### How It Works
 
   - Authorize Goodreads: When you log in, the app sends an oauth request to the goodreads api for authorizing requests to the site. It gets your goodreads user info and registers you as a user to the bookvis database.
